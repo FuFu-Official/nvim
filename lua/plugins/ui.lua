@@ -1,19 +1,15 @@
 return {
-  -- {
-  --   "ellisonleao/gruvbox.nvim",
-  --   opts = {
-  --     transparent_mode = true,
-  --   },
-  -- },
   {
-    "folke/tokyonight.nvim",
-    enabled = false,
+    "ellisonleao/gruvbox.nvim",
+    opts = {
+      -- transparent_mode = true,
+    },
   },
   {
     "catppuccin/nvim",
     opts = {
       flavour = "mocha",
-      transparent_background = false,
+      -- transparent_background = true,
       auto_integrations = true,
     },
   },
@@ -23,12 +19,9 @@ return {
     opts = {
       variant = "moon",
       styles = {
-        transparency = true,
+        -- transparency = true,
       },
     },
-  },
-  {
-    "RRethy/base16-nvim",
   },
   {
     "LazyVim/LazyVim",
@@ -58,17 +51,17 @@ return {
       },
     },
   },
-  {
-    "xiyaowong/transparent.nvim",
-    opts = {
-      extra_groups = {
-        "NormalFloat",
-        "FloatBorder",
-      },
-    },
-    config = function(_, opts)
-      require("transparent").setup(opts)
-      require("transparent").clear_prefix("gitsigns")
-    end,
-  },
+  -- {
+  --   "xiyaowong/transparent.nvim",
+  --   opts = {
+  --     extra_groups = {
+  --       "NormalFloat",
+  --       "FloatBorder",
+  --     },
+  --   },
+  --   config = function(_, opts)
+  --     require("transparent").setup(opts)
+  --     require("transparent").clear_prefix("gitsigns")
+  --   end,
+  -- },
 }
