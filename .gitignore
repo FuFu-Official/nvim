@@ -1,0 +1,23 @@
+################################
+## White list based gitignore ##
+################################
+
+# forbidden
+*
+.*
+
+
+# allowed
+!.git*
+!*.md
+!*.json
+!*.lua
+!*.vim
+!lua
+!lua/**
+!*.toml
+!LICENSE
+!dots
+!dots/**
+!colors
+!colors/**
