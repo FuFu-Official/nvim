@@ -19,14 +19,14 @@ return {
     opts = {
       variant = "moon",
       styles = {
-        -- transparency = true,
+        transparency = true,
       },
     },
   },
   {
     "LazyVim/LazyVim",
     opts = {
-      colorscheme = "rose-pine",
+      colorscheme = "tokyonight",
     },
   },
   {
