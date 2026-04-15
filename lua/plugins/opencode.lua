@@ -48,7 +48,7 @@ return {
           require("opencode").select()
         end,
         mode = { "n", "x" },
-        desc = "Execute opencode action",
+        desc = "Select opencode action",
       },
       {
         "<leader>ao",
@@ -71,7 +71,7 @@ return {
       {
         "<leader>ak",
         function()
-          require("opencode").command("session.half.page.up")
+          require("opencode").command("session.page.up")
         end,
         mode = "n",
         desc = "Scroll opencode up",
@@ -79,7 +79,7 @@ return {
       {
         "<leader>aj",
         function()
-          require("opencode").command("session.half.page.down")
+          require("opencode").command("session.page.down")
         end,
         mode = "n",
         desc = "Scroll opencode down",
@@ -136,6 +136,8 @@ return {
           end,
         },
       }
+
+      vim.o.autoread = true
     end,
   },
   {

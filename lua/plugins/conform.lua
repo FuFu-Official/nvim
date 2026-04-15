@@ -14,7 +14,6 @@ return {
       toml = { "dprint" },
       typescript = { "dprint" },
       css = { "prettier" },
-      kdl = { "kdlfmt" },
       rust = { "rustfmt" },
       ron = { "fmtron" },
     },
