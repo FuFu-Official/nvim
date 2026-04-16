@@ -4,5 +4,17 @@
 
 vim.g.root_spec = { "lsp", "cwd", { ".git", "lua" } }
 
+vim.g.clipboard = {
+  name = "OSC 52",
+  copy = {
+    ["+"] = require("vim.ui.clipboard.osc52").copy("+"),
+    ["*"] = require("vim.ui.clipboard.osc52").copy("*"),
+  },
+  paste = {
+    ["+"] = require("vim.ui.clipboard.osc52").paste("+"),
+    ["*"] = require("vim.ui.clipboard.osc52").paste("*"),
+  },
+}
+
 -- vim.opt.scrolloff = 10
 -- vim.opt.jumpoptions = "stack"
