@@ -5,6 +5,8 @@
 vim.g.root_spec = { "lsp", "cwd", { ".git", "lua" } }
 
 if vim.env.SSH_CONNECTION then
+  vim.opt.clipboard = "unnamedplus"
+
   vim.g.clipboard = {
     name = "OSC 52",
     copy = {
