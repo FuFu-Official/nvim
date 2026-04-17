@@ -30,5 +30,15 @@ return {
 
       return opts
     end,
+    config = function(_, opts)
+      require("lspconfig").ron_lsp.setup(opts.servers.ron_lsp)
+
+      vim.api.nvim_create_autocmd("FileType", {
+        pattern = "ron",
+        callback = function()
+          vim.bo.commentstring = "// %s"
+        end,
+      })
+    end,
   },
 }
