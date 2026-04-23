@@ -4,10 +4,33 @@ return {
     enabled = false,
   },
   {
+    "nvim-mini/mini.ai",
+    opts = function(_, opts)
+      opts = opts or {}
+      opts.mappings = opts.mappings or {}
+      opts.mappings.around_next = "ae"
+      opts.mappings.around_last = "ie"
+
+      return opts
+    end,
+  },
+  {
     "folke/snacks.nvim",
     opts = {
       image = {
-        enabled = true,
+        doc = {
+          inline = false,
+          float = false,
+        },
+      },
+    },
+    keys = {
+      {
+        "<leader>um",
+        function()
+          Snacks.image.hover()
+        end,
+        desc = "Image Hover",
       },
     },
   },
