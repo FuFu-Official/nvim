@@ -87,6 +87,29 @@ return {
     },
     config = function()
       local opencode_cmd = "opencode --port"
+
+      local function attach_terminal_focus(win_id)
+        local buf_id = vim.api.nvim_win_get_buf(win_id)
+
+        vim.keymap.set("n", "<LeftMouse>", function()
+          vim.schedule(function()
+            if
+              vim.api.nvim_win_is_valid(win_id)
+              and vim.api.nvim_get_current_win() == win_id
+              and vim.fn.mode() == "n"
+            then
+              vim.cmd("startinsert")
+            end
+          end)
+
+          return "<LeftMouse>"
+        end, {
+          buffer = buf_id,
+          expr = true,
+          silent = true,
+        })
+      end
+
       local snacks_terminal_opts = {
         interactive = false,
         win = {
@@ -95,6 +118,7 @@ return {
           enter = false,
           on_win = function(win)
             require("opencode.terminal").setup(win.win)
+            attach_terminal_focus(win.win)
           end,
         },
       }
