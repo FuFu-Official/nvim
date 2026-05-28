@@ -13,8 +13,11 @@
 !*.json
 !*.lua
 !*.vim
+!*.sh
 !lua
 !lua/**
+!scripts
+!scripts/**
 !*.toml
 !LICENSE
 !dots
