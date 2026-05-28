@@ -10,13 +10,32 @@ The installer scans the local config before doing work, but it does not install 
 - Non-editor system tools are opt-in through apt when needed.
 - Before installing, the script prints disk space and warns loudly if free space is low for a large selection.
 
-Managed release binaries are linked into `bin/` in this repository. Add it before system paths:
+Managed release binaries are stored inside this repository under `bin/.tools/`.
+The script also creates command links in `~/.local/bin` by default:
 
-```sh
-export PATH="$HOME/.config/nvim/bin:$HOME/.local/bin:$PATH"
+```text
+~/.local/bin/nvim -> /path/to/this/repo/bin/.tools/nvim/<version>/...
 ```
 
-If you clone this repo somewhere other than `~/.config/nvim`, use that clone path instead.
+That means the downloaded files stay owned by this repo's scripts, while normal shell commands can find `nvim`, `lazygit`, or `opencode` through `~/.local/bin`.
+
+The script does not edit your shell rc file. If `~/.local/bin` is not already in `PATH`, add this to `~/.bashrc`, `~/.zshrc`, or `~/.profile`:
+
+```sh
+export PATH="$HOME/.local/bin:$PATH"
+```
+
+To link commands somewhere else, set `LINK_DIR`:
+
+```sh
+LINK_DIR="$HOME/bin" scripts/install.sh
+```
+
+To keep links only inside this repository and not write into `~/.local/bin`:
+
+```sh
+INSTALL_LINKS=0 scripts/install.sh
+```
 
 ## Scripts
 
@@ -48,7 +67,7 @@ Optional install groups:
 
 Use `scripts/install.sh --list-groups` to print this from the script.
 
-`scripts/update.sh` updates already-installed upstream release tools in `bin/` and syncs Lazy.nvim:
+`scripts/update.sh` updates already-installed upstream release tools and syncs Lazy.nvim:
 
 ```sh
 scripts/update.sh

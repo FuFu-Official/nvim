@@ -507,4 +507,10 @@ if [[ "$SYNC_PLUGINS" == "1" ]]; then
 fi
 
 log "done"
-printf 'Add this to PATH for the managed tools: %s\n' "$BIN_DIR"
+if [[ "$INSTALL_LINKS" == "1" ]]; then
+  printf 'Managed tools are stored under: %s\n' "$TOOL_HOME"
+  printf 'Command links are installed under: %s\n' "$LINK_DIR"
+  printf 'Make sure this directory is in PATH: %s\n' "$LINK_DIR"
+else
+  printf 'Managed tools are linked under: %s\n' "$BIN_DIR"
+fi

@@ -5,6 +5,8 @@ SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 ROOT_DIR="$(cd -- "$SCRIPT_DIR/.." && pwd)"
 BIN_DIR="${BIN_DIR:-$ROOT_DIR/bin}"
 TOOL_HOME="$BIN_DIR/.tools"
+LINK_DIR="${LINK_DIR:-$HOME/.local/bin}"
+INSTALL_LINKS="${INSTALL_LINKS:-1}"
 CACHE_DIR="${CACHE_DIR:-$ROOT_DIR/.cache/bootstrap}"
 BUILD_DIR="$CACHE_DIR/build"
 RELEASE_CACHE_DIR="$CACHE_DIR/releases"
@@ -68,6 +70,9 @@ run_sudo() {
 
 ensure_dirs() {
   run mkdir -p "$BIN_DIR" "$TOOL_HOME" "$CACHE_DIR" "$BUILD_DIR" "$RELEASE_CACHE_DIR"
+  if [[ "$INSTALL_LINKS" == "1" ]]; then
+    run mkdir -p "$LINK_DIR"
+  fi
 }
 
 host_arch() {
@@ -246,6 +251,10 @@ link_tool_binary() {
   command_name="$(tool_command "$tool")"
   run chmod +x "$binary_path"
   run ln -sfn "$binary_path" "$BIN_DIR/$command_name"
+  if [[ "$INSTALL_LINKS" == "1" ]]; then
+    run mkdir -p "$LINK_DIR"
+    run ln -sfn "$binary_path" "$LINK_DIR/$command_name"
+  fi
   if [[ "$DRY_RUN" != "1" ]]; then
     mkdir -p "$TOOL_HOME/$tool"
     printf '%s\n' "$version" >"$TOOL_HOME/$tool/current.version"
@@ -278,6 +287,9 @@ install_release_asset() {
 
   if [[ "$DRY_RUN" == "1" ]]; then
     run ln -sfn "$destination/<extracted>/$command_name" "$BIN_DIR/$command_name"
+    if [[ "$INSTALL_LINKS" == "1" ]]; then
+      run ln -sfn "$destination/<extracted>/$command_name" "$LINK_DIR/$command_name"
+    fi
     return 0
   fi
 
@@ -461,6 +473,25 @@ installed_managed_tools() {
   done
 }
 
+remove_link_if_managed() {
+  local path="$1"
+  local target
+
+  if [[ "$DRY_RUN" == "1" ]]; then
+    run sh -c 'test -L "$1" && case "$(readlink "$1")" in "$2"/*|"$3"/*) rm -f "$1";; esac' _ "$path" "$TOOL_HOME" "$BIN_DIR"
+    return 0
+  fi
+
+  [[ -L "$path" ]] || return 0
+
+  target="$(readlink "$path" || true)"
+  case "$target" in
+    "$TOOL_HOME"/* | "$BIN_DIR"/*)
+      rm -f "$path"
+      ;;
+  esac
+}
+
 remove_managed_tools() {
   local tool
   local command_name
@@ -468,9 +499,11 @@ remove_managed_tools() {
   for tool in $(managed_tools); do
     command_name="$(tool_command "$tool")"
     run rm -f "$BIN_DIR/$command_name"
+    remove_link_if_managed "$LINK_DIR/$command_name"
   done
   for tool in $(legacy_managed_tools); do
     run rm -f "$BIN_DIR/$tool"
+    remove_link_if_managed "$LINK_DIR/$tool"
     run rm -rf "$TOOL_HOME/$tool"
   done
   run rm -rf "$TOOL_HOME"
