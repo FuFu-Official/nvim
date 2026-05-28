@@ -90,8 +90,32 @@ return {
 
       local function attach_terminal_focus(win_id)
         local buf_id = vim.api.nvim_win_get_buf(win_id)
+        local mouse_keys = {
+          "<LeftMouse>",
+          "<LeftDrag>",
+          "<LeftRelease>",
+          "<MiddleMouse>",
+          "<MiddleDrag>",
+          "<MiddleRelease>",
+          "<RightMouse>",
+          "<RightDrag>",
+          "<RightRelease>",
+          "<2-LeftMouse>",
+          "<2-LeftDrag>",
+          "<2-LeftRelease>",
+          "<3-LeftMouse>",
+          "<3-LeftDrag>",
+          "<3-LeftRelease>",
+          "<4-LeftMouse>",
+          "<4-LeftDrag>",
+          "<4-LeftRelease>",
+          "<ScrollWheelUp>",
+          "<ScrollWheelDown>",
+          "<ScrollWheelLeft>",
+          "<ScrollWheelRight>",
+        }
 
-        vim.keymap.set("n", "<LeftMouse>", function()
+        local function focus_terminal_after_mouse(mouse_key)
           vim.schedule(function()
             if
               vim.api.nvim_win_is_valid(win_id)
@@ -102,12 +126,18 @@ return {
             end
           end)
 
-          return "<LeftMouse>"
-        end, {
-          buffer = buf_id,
-          expr = true,
-          silent = true,
-        })
+          return mouse_key
+        end
+
+        for _, mouse_key in ipairs(mouse_keys) do
+          vim.keymap.set("n", mouse_key, function()
+            return focus_terminal_after_mouse(mouse_key)
+          end, {
+            buffer = buf_id,
+            expr = true,
+            silent = true,
+          })
+        end
       end
 
       local snacks_terminal_opts = {
