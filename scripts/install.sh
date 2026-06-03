@@ -22,8 +22,8 @@ Usage: scripts/install.sh [options]
 Install a Neovim work environment for this config on Ubuntu/Debian.
 
 Default install is intentionally small:
-  - apt basics for downloading/searching: curl, git, jq, tar/unzip/xz, ripgrep, fd-find, fzf
-  - nvim from the official Neovim release into ./bin
+  - apt basics for downloading/searching and Treesitter parser builds
+  - nvim and tree-sitter from official releases into ./bin
   - Lazy.nvim plugin sync
 
 Optional groups:
@@ -233,6 +233,8 @@ tar
 gzip
 unzip
 xz-utils
+gcc
+g++
 ripgrep
 fd-find
 fzf
@@ -459,6 +461,9 @@ build_prereq_packages() {
   case "$1" in
     nvim)
       printf '%s\n' build-essential cmake ninja-build gettext pkg-config
+      ;;
+    tree-sitter)
+      printf '%s\n' cargo
       ;;
     lazygit)
       printf '%s\n' golang-go

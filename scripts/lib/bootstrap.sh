@@ -90,7 +90,7 @@ host_arch() {
 }
 
 managed_tools() {
-  printf '%s\n' nvim lazygit opencode
+  printf '%s\n' nvim tree-sitter lazygit opencode
 }
 
 legacy_managed_tools() {
@@ -114,7 +114,7 @@ valid_optional_group() {
 
 managed_tools_for_group() {
   case "$1" in
-    core) printf '%s\n' nvim ;;
+    core) printf '%s\n' nvim tree-sitter ;;
     git) printf '%s\n' lazygit ;;
     ai) printf '%s\n' opencode ;;
     build | latex) ;;
@@ -125,6 +125,7 @@ managed_tools_for_group() {
 tool_command() {
   case "$1" in
     nvim) printf 'nvim' ;;
+    tree-sitter) printf 'tree-sitter' ;;
     lazygit) printf 'lazygit' ;;
     opencode) printf 'opencode' ;;
     *) die "unknown managed tool: $1" ;;
@@ -134,6 +135,7 @@ tool_command() {
 tool_repo() {
   case "$1" in
     nvim) printf 'neovim/neovim' ;;
+    tree-sitter) printf 'tree-sitter/tree-sitter' ;;
     lazygit) printf 'jesseduffield/lazygit' ;;
     opencode) printf 'sst/opencode' ;;
     *) die "unknown managed tool: $1" ;;
@@ -148,6 +150,8 @@ asset_regex() {
   case "$tool:$arch" in
     nvim:x86_64) printf '^nvim-linux-x86_64\.tar\.gz$' ;;
     nvim:aarch64) printf '^nvim-linux-arm64\.tar\.gz$' ;;
+    tree-sitter:x86_64) printf '^tree-sitter-cli-linux-x64\.zip$' ;;
+    tree-sitter:aarch64) printf '^tree-sitter-cli-linux-arm64\.zip$' ;;
     lazygit:x86_64) printf '^lazygit_[0-9.]+_linux_x86_64\.tar\.gz$' ;;
     lazygit:aarch64) printf '^lazygit_[0-9.]+_linux_arm64\.tar\.gz$' ;;
     opencode:x86_64) printf '^opencode-linux-x64\.tar\.gz$' ;;
@@ -158,7 +162,7 @@ asset_regex() {
 
 build_supported() {
   case "$1" in
-    nvim | lazygit | opencode)
+    nvim | tree-sitter | lazygit | opencode)
       return 0
       ;;
     *)
@@ -306,6 +310,7 @@ build_from_source() {
 
   case "$tool" in
     nvim) build_nvim "$tag" ;;
+    tree-sitter) build_cargo_tool "$tool" tree-sitter-cli "$tag" ;;
     lazygit) build_lazygit "$tag" ;;
     opencode) build_npm_tool "$tool" opencode-ai "$tag" ;;
     *) die "unreachable build target: $tool" ;;

@@ -24,6 +24,10 @@ if [[ -f "$ROOT_DIR/init.lua" ]]; then
   MANAGED+=("nvim|editor runtime: apt is usually too old on Ubuntu/Debian")
 fi
 
+if [[ -f "$ROOT_DIR/lua/plugins/treesitter.lua" ]]; then
+  MANAGED+=("tree-sitter|nvim-treesitter CLI; apt/npm versions can lag upstream")
+fi
+
 if has_text 'lazyvim\.plugins\.extras\.lang\.git' "$ROOT_DIR/lazyvim.json"; then
   MANAGED+=("lazygit|LazyVim git extra")
 fi

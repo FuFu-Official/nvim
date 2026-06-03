@@ -4,7 +4,7 @@ Scripts in `scripts/` bootstrap this LazyVim config on Ubuntu/Debian.
 
 The installer scans the local config before doing work, but it does not install every detected dependency by default.
 
-- Default install is intentionally small: apt basics for downloading/searching plus `nvim` from the official Neovim GitHub release.
+- Default install is intentionally small: apt basics for downloading/searching and Treesitter parser builds, plus `nvim` and `tree-sitter` from official GitHub releases.
 - `lazygit` and `opencode` can be installed from upstream release binaries when their groups are selected.
 - LSP servers, formatters, and linters are left to LazyVim/Mason. The bootstrap scan reports them, but the shell installer does not install them.
 - Non-editor system tools are opt-in through apt when needed.
