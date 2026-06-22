@@ -1,17 +1,25 @@
 return {
   {
     "nickjvandyke/opencode.nvim",
-    version = "*",
+    version = "*", -- Latest stable release
     dependencies = {
       {
         "folke/snacks.nvim",
-        optional = true,
         opts = {
-          input = {},
+          input = {
+            enabled = true, -- Enhances `ask()`
+          },
           picker = {
+            enabled = true, -- Enhances `select()`
             actions = {
-              opencode_send = function(...)
-                return require("opencode").snacks_picker_send(...)
+              opencode_send = function(picker) ---@param picker snacks.Picker
+                local items = vim.tbl_map(function(item) ---@param item snacks.picker.Item
+                  return item.file
+                      and require("opencode").format({ path = item.file, from = item.pos, to = item.end_pos })
+                    or item.text
+                end, picker:selected({ fallback = true }))
+
+                require("opencode").prompt(table.concat(items, ", ") .. " ")
               end,
             },
             win = {
@@ -25,173 +33,57 @@ return {
         },
       },
     },
-    keys = {
-      {
-        "<leader>aa",
-        function()
-          require("opencode").toggle()
-        end,
-        mode = { "n", "t" },
-        desc = "Toggle opencode",
-      },
-      {
-        "<leader>as",
-        function()
-          require("opencode").ask("@this: ", { submit = true })
-        end,
-        mode = { "n", "x" },
-        desc = "Ask opencode",
-      },
-      {
-        "<leader>ax",
-        function()
-          require("opencode").select()
-        end,
-        mode = { "n", "x" },
-        desc = "Select opencode action",
-      },
-      {
-        "<leader>ao",
-        function()
-          return require("opencode").operator("@this ")
-        end,
-        mode = { "n", "x" },
-        expr = true,
-        desc = "Add range to opencode",
-      },
-      {
-        "<leader>aO",
-        function()
-          return require("opencode").operator("@this ") .. "_"
-        end,
-        mode = "n",
-        expr = true,
-        desc = "Add line to opencode",
-      },
-      {
-        "<leader>ak",
-        function()
-          require("opencode").command("session.page.up")
-        end,
-        mode = "n",
-        desc = "Scroll opencode up",
-      },
-      {
-        "<leader>aj",
-        function()
-          require("opencode").command("session.page.down")
-        end,
-        mode = "n",
-        desc = "Scroll opencode down",
-      },
-    },
     config = function()
+      ---@type opencode.Opts
+      vim.g.opencode_opts = {
+        -- Your configuration, if any; goto definition on the type for details
+      }
+
+      vim.o.autoread = true -- Required for `vim.g.opencode_opts.events.reload`
+
+      -- Recommended/example keymaps
+      vim.keymap.set({ "n", "x" }, "<leader>as", function()
+        require("opencode").ask("@this: ")
+      end, { desc = "Ask OpenCode…" })
+      vim.keymap.set({ "n", "x" }, "<leader>ax", function()
+        require("opencode").select()
+      end, { desc = "Select OpenCode…" })
+
+      vim.keymap.set({ "n", "x" }, "ao", function()
+        return require("opencode").operator("@this ")
+      end, { desc = "Append range to OpenCode", expr = true })
+      vim.keymap.set("n", "aO", function()
+        return require("opencode").operator("@this ") .. "_"
+      end, { desc = "Append line to OpenCode", expr = true })
+
+      vim.keymap.set("n", "<leader>ak", function()
+        require("opencode").command("session.half.page.up")
+      end, { desc = "Scroll OpenCode up" })
+      vim.keymap.set("n", "<leader>aj", function()
+        require("opencode").command("session.half.page.down")
+      end, { desc = "Scroll OpenCode down" })
+
       local opencode_cmd = "opencode --port"
-
-      local function attach_terminal_focus(win_id)
-        local buf_id = vim.api.nvim_win_get_buf(win_id)
-        local mouse_keys = {
-          "<LeftMouse>",
-          "<LeftDrag>",
-          "<LeftRelease>",
-          "<MiddleMouse>",
-          "<MiddleDrag>",
-          "<MiddleRelease>",
-          "<RightMouse>",
-          "<RightDrag>",
-          "<RightRelease>",
-          "<2-LeftMouse>",
-          "<2-LeftDrag>",
-          "<2-LeftRelease>",
-          "<3-LeftMouse>",
-          "<3-LeftDrag>",
-          "<3-LeftRelease>",
-          "<4-LeftMouse>",
-          "<4-LeftDrag>",
-          "<4-LeftRelease>",
-          "<ScrollWheelUp>",
-          "<ScrollWheelDown>",
-          "<ScrollWheelLeft>",
-          "<ScrollWheelRight>",
-        }
-
-        local function focus_terminal_after_mouse(mouse_key)
-          vim.schedule(function()
-            if
-              vim.api.nvim_win_is_valid(win_id)
-              and vim.api.nvim_get_current_win() == win_id
-              and vim.fn.mode() == "n"
-            then
-              vim.cmd("startinsert")
-            end
-          end)
-
-          return mouse_key
-        end
-
-        for _, mouse_key in ipairs(mouse_keys) do
-          vim.keymap.set("n", mouse_key, function()
-            return focus_terminal_after_mouse(mouse_key)
-          end, {
-            buffer = buf_id,
-            expr = true,
-            silent = true,
-          })
-        end
-      end
-
+      ---@type snacks.terminal.Opts
       local snacks_terminal_opts = {
-        interactive = false,
         win = {
           position = "right",
-          width = 0.4,
           enter = false,
-          on_win = function(win)
-            require("opencode.terminal").setup(win.win)
-            attach_terminal_focus(win.win)
-          end,
         },
       }
 
-      local has_snacks, snacks_terminal = pcall(require, "snacks.terminal")
+      ---@type opencode.Opts
       vim.g.opencode_opts = {
-        lsp = { enabled = true },
         server = {
           start = function()
-            if has_snacks then
-              snacks_terminal.open(opencode_cmd, snacks_terminal_opts)
-            else
-              vim.notify("snacks.nvim is not available", vim.log.levels.WARN)
-            end
-          end,
-          stop = function()
-            if has_snacks then
-              local terminal = snacks_terminal.get(
-                opencode_cmd,
-                vim.tbl_deep_extend("force", {
-                  create = false,
-                }, snacks_terminal_opts)
-              )
-              if terminal then
-                local job_id = terminal.buf and vim.b[terminal.buf] and vim.b[terminal.buf].terminal_job_id
-                if job_id then
-                  pcall(vim.fn.jobstop, job_id)
-                end
-                terminal:close()
-              end
-            end
-          end,
-          toggle = function()
-            if has_snacks then
-              snacks_terminal.toggle(opencode_cmd, snacks_terminal_opts)
-            else
-              vim.notify("snacks.nvim is not available", vim.log.levels.WARN)
-            end
+            require("snacks.terminal").open(opencode_cmd, snacks_terminal_opts)
           end,
         },
       }
 
-      vim.o.autoread = true
+      vim.keymap.set({ "n" }, "<leader>aa", function()
+        require("snacks.terminal").toggle(opencode_cmd, snacks_terminal_opts)
+      end, { desc = "Toggle OpenCode" })
     end,
   },
   {
