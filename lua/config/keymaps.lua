@@ -4,6 +4,9 @@
 
 local keymap = vim.keymap
 
+keymap.set("n", "1", "^")
+keymap.set("n", "0", "$")
+
 -- Exit insert mode quickly by pressing "jk"
 keymap.set("i", "jk", "<ESC>", { desc = "Exit insert mode using 'jk'" })
 
