@@ -51,17 +51,4 @@ return {
       },
     },
   },
-  -- {
-  --   "xiyaowong/transparent.nvim",
-  --   opts = {
-  --     extra_groups = {
-  --       "NormalFloat",
-  --       "FloatBorder",
-  --     },
-  --   },
-  --   config = function(_, opts)
-  --     require("transparent").setup(opts)
-  --     require("transparent").clear_prefix("gitsigns")
-  --   end,
-  -- },
 }

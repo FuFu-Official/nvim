@@ -8,4 +8,4 @@
 -- e.g. vim.api.nvim_del_augroup_by_name("lazyvim_wrap_spell")
 --
 
-vim.api.nvim_create_user_command("W", "w !sudo tee % > /dev/null", {})
+vim.api.nvim_create_user_command("SudoWrite", "w !sudo tee % > /dev/null", {})

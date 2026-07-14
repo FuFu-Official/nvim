@@ -2,8 +2,7 @@
 -- Default options that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/options.lua
 -- Add any additional options here
 
-vim.g.root_spec = { "lsp", "cwd", { ".git", "lua" } }
-
+-- Enable OSC 52 clipboard support for SSH connections
 if vim.env.SSH_CONNECTION then
   vim.opt.clipboard = "unnamedplus"
 
@@ -19,6 +18,3 @@ if vim.env.SSH_CONNECTION then
     },
   }
 end
-
--- vim.opt.scrolloff = 10
--- vim.opt.jumpoptions = "stack"
