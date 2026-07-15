@@ -19,7 +19,7 @@ return {
     opts = {
       variant = "moon",
       styles = {
-        transparency = true,
+        -- transparency = true,
       },
     },
   },
@@ -27,28 +27,6 @@ return {
     "LazyVim/LazyVim",
     opts = {
       colorscheme = "tokyonight",
-    },
-  },
-  {
-    "eandrju/cellular-automaton.nvim",
-  },
-  {
-    "Aasim-A/scrollEOF.nvim",
-    event = { "CursorMoved", "WinScrolled" },
-    opts = {
-      insert_mode = true,
-      floating = false,
-      disabled_filetypes = { "NvimTree", "lazy", "terminal", "snacks_terminal" },
-    },
-  },
-  {
-    "folke/noice.nvim",
-    opts = {
-      lsp = {
-        signature = {
-          auto_open = { enabled = false },
-        },
-      },
     },
   },
 }

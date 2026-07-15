@@ -4,10 +4,7 @@ return {
     ---@class PluginLspOpts
     opts = {
       servers = {
-        pyright = {},
         fish_lsp = {},
-        cmake = {},
-        hyprls = {},
         bashls = {},
         texlab = {
           settings = {

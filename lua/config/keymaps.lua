@@ -1,6 +1,4 @@
--- Keymaps are automatically loaded on the VeryLazy event
--- Default keymaps that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua
--- Add any additional keymaps here
+-- LazyVim default keymaps: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua
 
 local keymap = vim.keymap
 
@@ -12,9 +10,6 @@ keymap.set("i", "jk", "<ESC>", { desc = "Exit insert mode using 'jk'" })
 keymap.set("v", "q", "<Esc>", { silent = true, desc = "Exit visual mode" })
 
 keymap.set("n", "U", "<C-r>", { desc = "Redo last undone change" })
-
-keymap.set("v", "J", ":m '>+1<CR>gv=gv", { desc = "Move selected lines down" })
-keymap.set("v", "K", ":m '<-2<CR>gv=gv", { desc = "Move selected lines up" })
 
 keymap.set("n", "J", function()
   local pos = vim.api.nvim_win_get_cursor(0)
